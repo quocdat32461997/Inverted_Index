@@ -39,65 +39,69 @@ class table():
         return list
     #end parser_data()
 
-    #categorize word
-    def categorize_word(self, text_name, data):
-        '''
-        :param text_name: name of text
-        :param parse_data: list of split words
-        :return:
-        '''
-        list = parser_data(data)
-        for index1 in range(len(self.inverted_table)):
-            for index2 in list:
-                if self.inverted_table[index1] is not list[index2]:
-                    self.inverted_table.append(word_index(list[index2]))
-                else:
-                    word = self.inverted_table[index1]
-                    word.add_word_index(text_name, index2)
-    #end categorize_word()
 
-    #create inverted_table
+    #create inverted table
     def create_inverted_table(self, file_name):
-        file = open(str(file_name), 'r')    #open file
+        '''
+        :param file_name: name of file that contains a specific word
+        :return: void
+        '''
+        #open file
+        file = open(str(file_name), 'r')
         data = file.read()
 
         #add data to inverted_table
-        list = self.parse_data(data)
+        data_list = self.parse_data(data)
         if not self.inverted_table:
-            for index in range(len(list)):
-                word = word_index(list[index], file_name, index)
+            for index in range(len(data_list)):
+                word = word_index(data_list[index], file_name, index)
                 self.inverted_table.append(word)
         else:
             word_list = []
+            #create a list of word_names
             for index in range(len(self.inverted_table)):
                 word_list.append(self.inverted_table[index].get_word())
-            for index in range(len(list)):
-                if not list[index] in word_list:
-                    word = word_index(list[index], str(file_name), index)
+            #add word
+            for index in range(len(data_list)):
+                if not data_list[index] in word_list:
+                    #initiate word_index variables
+                    word = word_index(data_list[index], str(file_name), index)
                     self.inverted_table.append(word)
                 else:
-                    ind = word_list.index(list[index])
+                    #add duplicates to word_index variables
+                    ind = word_list.index(data_list[index])
                     self.inverted_table[ind].add_word_text(str(file_name), index)
-        file.close()    #close file
+        #close file
+        file.close()
     #end create_inverted_table
+
 
     #find(): search method for word
     def find(self, word):
-        word_index = []
+        '''
+        :param word: word need finding
+        :return: find index of word in different files and print out inverted_tabl
+        '''
+        #for-lopp looking for word
         for index in range(len(self.inverted_table)):
-            w = self.inverted_table[index]
-            if word == self.inverted_table[index]:
-                word_index.append(index)
-        print("The word " + word + " is in the text")
-        print(word_index)
-        return 1
+            if word == self.inverted_table[index].get_word():
+                return index
     #end find()
 
+
     #print_table(): print inverted table
-    def print_table(self):
-        for element in self.inverted_table:
-            print(element.get_word())
-        print("done")
+    def print_table(self, word):
+        '''
+        :param word: inverted_table variable that represent a word
+        :return: print inverted_table of the word
+        '''
+        w = self.inverted_table[self.find(word)]
+        word_table = w.list_file
+        print("Table of " + w.get_word() + " :")
+        for element in word_table.keys():
+            print(element, end = "  ")
+            print(word_table[element])
+        print("\ndone")
     #end print_table()
 
 #end inverted_table class
