@@ -13,6 +13,7 @@ class table():
     def parse_data(self, data):
         #split space
         list = data.split()
+
         #split other non-alpha and non-digit characters
         for words in range(len(list)):
             word = list[words]
@@ -23,19 +24,21 @@ class table():
                 while index < len(word):
                     #word either alpha or digit
                     if word[index].isalpha() or word[index].isdigit():
-                        if start == -1: #start must index first character in the string
-                            start = index   #end must increment when alpha character appears
+                        if start == -1:
+                            start = index
                         end += 1
                     else:
-                        if word[index - 1].isalpha() or word[index - 1].isdigit():   #end may index the non-alpha character at the tail of substring
+                        # end may index the non-alpha character at the tail of substring
+                        if word[index - 1].isalpha() or word[index - 1].isdigit():
                             end = index
                             break
                     index += 1
                 #add substring to list
-                list[words] = word[start:end ]
-            elif not word[0].isalpha(): #all string length must be breater than 0
-                list.remove(list[word]) #if not alpha, the string comp is delete
-        #need more advance parsing
+                list[words] = word[start:end]
+            # all string length must be breater than 0
+            elif not word[0].isalpha():
+                list.remove(list[word]) #the string comp is delete
+
         return list
     #end parser_data()
 
@@ -58,7 +61,7 @@ class table():
                 self.inverted_table.append(word)
         else:
             word_list = []
-            #create a list of word_names
+
             for index in range(len(self.inverted_table)):
                 word_list.append(self.inverted_table[index].get_word())
             #add word
@@ -71,6 +74,7 @@ class table():
                     #add duplicates to word_index variables
                     ind = word_list.index(data_list[index])
                     self.inverted_table[ind].add_word_text(str(file_name), index)
+
         #close file
         file.close()
     #end create_inverted_table
@@ -82,7 +86,6 @@ class table():
         :param word: word need finding
         :return: find index of word in different files and print out inverted_tabl
         '''
-        #for-lopp looking for word
         for index in range(len(self.inverted_table)):
             if word == self.inverted_table[index].get_word():
                 return index
@@ -93,7 +96,7 @@ class table():
     def print_table(self, word):
         '''
         :param word: inverted_table variable that represent a word
-        :return: print inverted_table of the word
+        :return: return search results in form of string variables
         '''
         if not self.find(word):
             print("Word not found\n")
@@ -101,11 +104,12 @@ class table():
 
         w = self.inverted_table[self.find(word)]
         word_table = w.list_file
-        print("Table of " + w.get_word() + " :")
+        strng = "Table of " + w.get_word() + " :" + '\n'
+
         for element in word_table.keys():
-            print(element, end = "  ")
-            print(word_table[element])
-        print("\ndone")
+            strng += str(element) + "   " + str(word_table[element]) + '\n'
+
+        return strng
     #end print_table()
 
 #end inverted_table class
